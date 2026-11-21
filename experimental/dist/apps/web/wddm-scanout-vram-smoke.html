@@ -1,0 +1,36 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Aero WDDM scanout VRAM smoke</title>
+    <style>
+      body {
+        font-family: system-ui, sans-serif;
+        margin: 16px;
+      }
+      canvas {
+        image-rendering: pixelated;
+        border: 1px solid #999;
+      }
+      #status {
+        margin-top: 8px;
+        white-space: pre-wrap;
+        font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, 'Liberation Mono', 'Courier New',
+          monospace;
+      }
+    </style>
+    <script type="module" crossorigin src="/assets/wddm_scanout_vram_smoke-DNbmT9KZ.js"></script>
+    <link rel="modulepreload" crossorigin href="/assets/modulepreload-polyfill-B5Qt9EMX.js">
+    <link rel="modulepreload" crossorigin href="/assets/ipc-D7HV1B-u.js">
+    <link rel="modulepreload" crossorigin href="/assets/text-C_cA6phA.js">
+    <link rel="modulepreload" crossorigin href="/assets/shared_layout-D3FhP9yq.js">
+    <link rel="modulepreload" crossorigin href="/assets/harness_shared_memory-D-N8vj9v.js">
+    <link rel="modulepreload" crossorigin href="/assets/fnv1a-tGlFvuES.js">
+  </head>
+  <body>
+    <canvas id="frame"></canvas>
+    <div id="backend"></div>
+    <div id="status"></div>
+  </body>
+</html>

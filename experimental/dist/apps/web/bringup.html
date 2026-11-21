@@ -1,0 +1,36 @@
+<!doctype html>
+<!--
+  The Windows 7 bring-up shell: the fuller of the two, and the one used for manual bring-up work.
+
+  `index.html` beside this file is the canonical browser host that CI and Playwright drive. Both
+  draw on the same module library under `src/`; this one wires up more of it.
+-->
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Aero Platform</title>
+    <script type="module" crossorigin src="/assets/bringup-BCXkBfzs.js"></script>
+    <link rel="modulepreload" crossorigin href="/assets/modulepreload-polyfill-B5Qt9EMX.js">
+    <link rel="modulepreload" crossorigin href="/assets/text-C_cA6phA.js">
+    <link rel="modulepreload" crossorigin href="/assets/webusb_troubleshooting-3gX1ffrc.js">
+    <link rel="modulepreload" crossorigin href="/assets/ipc-D7HV1B-u.js">
+    <link rel="modulepreload" crossorigin href="/assets/shared_layout-D3FhP9yq.js">
+    <link rel="modulepreload" crossorigin href="/assets/protocol-BbgnAvKe.js">
+    <link rel="modulepreload" crossorigin href="/assets/coordinator-hqdG2P1U.js">
+    <link rel="modulepreload" crossorigin href="/assets/trace_ui-CoK7QwV6.js">
+    <link rel="modulepreload" crossorigin href="/assets/response_json-CG-nn0uH.js">
+    <link rel="modulepreload" crossorigin href="/assets/fnv1a-tGlFvuES.js">
+    <link rel="modulepreload" crossorigin href="/assets/usb_hex-QBrUtGr5.js">
+    <link rel="stylesheet" crossorigin href="/assets/webusb_troubleshooting-DDzU_NoS.css">
+    <link rel="stylesheet" crossorigin href="/assets/trace_ui-oTCDru5Z.css">
+  </head>
+  <body>
+    <div id="app"></div>
+    <!--
+      Use a relative module URL so this entrypoint works both:
+      - when served as the web app root (vite root=web → `/`)
+      - when served under the repo-root harness (`/apps/web/`) for Playwright and dev tooling
+    -->
+  </body>
+</html>
