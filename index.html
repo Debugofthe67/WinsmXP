@@ -1,4 +1,4 @@
-<!doctype html>
+\<!doctype html>
 <html>
 <head>
   <meta charset="utf-8" />
@@ -85,10 +85,10 @@
       justify-content: flex-end;
     }
 
-    /* Fallback Tile & Splash Colors */
+    /* Classic Windows 8 Metro Tile & Splash Colors */
     .tile-xp .tile-face, .splash-xp { background: #00a300; }
     .tile-7 .tile-face, .splash-7 { background: #2d89ef; }
-    .tile-10 .tile-face, .splash-10 { background: #603cba; }
+    .tile-8 .tile-face, .splash-8 { background: #008299; }
 
     /* Full-Bleed OS Preview Screenshot */
     .tile-preview {
@@ -200,12 +200,12 @@
     <h1 class="start-title">Start</h1>
     <div class="user-badge">
       <span>User</span>
-      <div class="user-avatar">W</div>
+      <div class="user-avatar">U</div>
     </div>
   </div>
 
   <div class="tile-grid">
-    <a class="tile tile-xp" href="xp/index.html" data-target="xp/index.html" data-theme="splash-xp" data-img="previews/xp.png" data-title="Windows XP">
+    <a class="tile tile-xp" href="xp/index.html" data-target="xp/index.html" data-theme="splash-xp" data-img="previews/xp.jpg" data-title="Windows XP">
       <div class="tile-face">
         <img class="tile-preview" src="previews/xp.jpg" alt="Windows XP Preview" />
         <div class="tile-caption">
@@ -225,6 +225,17 @@
       </div>
     </a>
 
+    <a class="tile tile-8" href="8/index.html" data-target="8/index.html" data-theme="splash-8" data-img="previews/8.png" data-title="Windows 8">
+      <div class="tile-face">
+        <img class="tile-preview" src="previews/8.png" alt="Windows 8 Preview" />
+        <div class="tile-caption">
+          <div class="tile-label">Windows 8.1</div>
+          <div class="tile-sub">1024 MB • ACPI</div>
+        </div>
+      </div>
+    </a>
+  </div>
+
   <!-- Full-Screen Flip Splash Container -->
   <div id="splash_stage">
     <div id="splash_card">
@@ -237,16 +248,6 @@
     </div>
   </div>
 
-      <a class="tile tile-8" href="8/index.html" data-target="8/index.html" data-theme="splash-8" data-img="previews/8.png" data-title="Windows 8">
-      <div class="tile-face">
-        <img class="tile-preview" src="previews/8.png" alt="Windows 8 Preview" />
-        <div class="tile-caption">
-          <div class="tile-label">Windows 8.1</div>
-          <div class="tile-sub">1024 MB • ACPI</div>
-        </div>
-      </div>
-    </a>
-  </div>
   <script>
     let isLaunching = false;
     const stage = document.getElementById("splash_stage");
