@@ -202,7 +202,7 @@
         if ("storage" in navigator && navigator.storage.getDirectory) {
           const root = await navigator.storage.getDirectory();
           try {
-            handle = await root.getFileHandle("win8-cached.img", { create: Boolean(useOpfs) });
+            handle = await root.getFileHandle("win7-cached.img", { create: Boolean(useOpfs) });
             const existing = await handle.getFile();
             if (existing.size > 0) {
               log("Loaded cached disk from OPFS (" + existing.size + " bytes). Booting...");
@@ -219,7 +219,7 @@
           const res = await fetch(url, { mode: "cors" });
           if (!res.ok) throw new Error("HTTP " + res.status);
 
-          const total = Number(res.headers.get("Content-Length")) || 3221225472;
+          const total = Number(res.headers.get("Content-Length")) || 0;
           const reader = res.body.getReader();
           const writable = await handle.createWritable();
           let received = 0, lastLoggedPct = -5;
@@ -229,10 +229,12 @@
             if (done) break;
             await writable.write(value);
             received += value.length;
-            const pct = Math.floor((received / total) * 100);
-            if (pct >= lastLoggedPct + 5) {
-              lastLoggedPct = pct;
-              log("Downloading: " + pct + "% (" + (received / 1048576).toFixed(1) + " MB)");
+            if (total > 0) {
+              const pct = Math.floor((received / total) * 100);
+              if (pct >= lastLoggedPct + 5) {
+                lastLoggedPct = pct;
+                log("Downloading: " + pct + "% (" + (received / 1048576).toFixed(1) + " MB)");
+              }
             }
           }
 
@@ -252,51 +254,17 @@
 
         const finalUrl = probeRes.url || url;
         const contentRange = probeRes.headers.get("Content-Range");
-        const size = contentRange ? Number(contentRange.split("/")[1]) : 3221225472;
+        const size = contentRange
+          ? Number(contentRange.split("/")[1])
+          : Number(probeRes.headers.get("Content-Length"));
 
-        log("Streaming 3.00 GiB disk (" + size + " bytes) via async fetch Range...");
+        if (!size) throw new Error("Could not determine exact disk byte size from server.");
 
-        const dirtyBlocks = new Map();
-
-        const rangeDisk = {
-          byteLength: size,
-          load: function () {
-            if (this.onload) this.onload({ target: this });
-          },
-          get: async function (offset, len, fn) {
-            try {
-              const end = offset + len - 1;
-              const r = await fetch(finalUrl, {
-                headers: { Range: "bytes=" + offset + "-" + end },
-                mode: "cors",
-              });
-              if (!r.ok && r.status !== 206) throw new Error("HTTP " + r.status);
-              const data = new Uint8Array(await r.arrayBuffer());
-
-              for (const [writeOffset, writeData] of dirtyBlocks.entries()) {
-                const writeEnd = writeOffset + writeData.length;
-                if (writeOffset < offset + len && writeEnd > offset) {
-                  const start = Math.max(offset, writeOffset);
-                  const stop = Math.min(offset + len, writeEnd);
-                  data.set(writeData.subarray(start - writeOffset, stop - writeOffset), start - offset);
-                }
-              }
-              fn(data);
-            } catch (e) {
-              log("Range read error at " + offset + ": " + e.message);
-            }
-          },
-          set: function (offset, slice, fn) {
-            dirtyBlocks.set(offset, new Uint8Array(slice));
-            if (fn) fn();
-          },
-          get_as_file: function () {
-            return new Blob([]);
-          }
-        };
-
+        log("Streaming disk (" + (size / 1048576).toFixed(1) + " MB) via async HTTP Range...");
         startEmulator({
-          buffer: rangeDisk,
+          url: finalUrl,
+          async: true,
+          size: size,
         });
 
       } catch (err) {
@@ -324,6 +292,7 @@
         log("Clear OPFS Error (" + err.name + "): " + err.message);
       }
     };
+
 
 
     document.getElementById("clear_opfs_btn").onclick = async function () {
