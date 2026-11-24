@@ -121,6 +121,7 @@
         bios: { url: "bios/seabios.bin" },
         vga_bios: { url: "bios/vgabios.bin" },
         hda: hdaConfig,
+        ...(initialStateUrl ? { initial_state: { url: initialStateUrl } } : {}),
         acpi: useAcpi,
         boot_order: 0x132,
         disable_mouse: false,
@@ -260,11 +261,12 @@
 
         if (!size) throw new Error("Could not determine exact disk byte size from server.");
 
-        log("Streaming disk (" + (size / 1048576).toFixed(1) + " MB) via async HTTP Range...");
+        log("Streaming disk (" + (size / 1048576).toFixed(1) + " MB) in 256 KB chunks...");
         startEmulator({
           url: finalUrl,
           async: true,
           size: size,
+          fixed_chunk_size: 262144,
         });
 
       } catch (err) {
