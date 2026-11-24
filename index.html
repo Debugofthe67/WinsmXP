@@ -1,68 +1,69 @@
 <!doctype html>
-<html>
+<html lang="en">
 <head>
   <meta charset="utf-8" />
-  <title>Start</title>
+  <title>WinsmXP — Start</title>
   <link rel="icon" href="data:," />
+  <link rel="stylesheet" href="https://unpkg.com/7.css" />
   <style>
-    * {
-      box-sizing: border-box;
-      user-select: none;
-    }
+    * { box-sizing: border-box; user-select: none; }
     body {
-      background: #180052;
-      background-image: radial-gradient(circle at 20% 25%, #2b0a7a 0%, #180052 55%, #0f0036 100%);
-      color: #fff;
-      font-family: "Segoe UI", "Segoe WP", Arial, sans-serif;
       margin: 0;
       min-height: 100vh;
+      background: radial-gradient(circle at 25% 25%, #2b0a7a 0%, #1b3b8c 50%, #0f1b4c 100%);
       display: flex;
-      flex-direction: column;
+      align-items: center;
       justify-content: center;
-      padding: 48px 64px;
+      padding: 20px;
       overflow: hidden;
+    }
+    .hybrid-window {
+      width: 100%;
+      max-width: 920px;
+      box-shadow: 0 20px 50px rgba(0, 0, 0, 0.65);
+    }
+    .metro-body {
+      background: linear-gradient(135deg, #180052 0%, #24086b 60%, #12003d 100%) !important;
+      color: #fff;
+      padding: 24px 28px 28px 28px !important;
     }
     .start-header {
       display: flex;
       justify-content: space-between;
-      align-items: flex-end;
-      max-width: 980px;
-      width: 100%;
-      margin: 0 auto 32px auto;
+      align-items: center;
+      margin-bottom: 20px;
     }
     .start-title {
-      font-size: 48px;
+      font-family: "Segoe UI", "Segoe WP", Arial, sans-serif;
+      font-size: 36px;
       font-weight: 200;
-      letter-spacing: -0.5px;
       margin: 0;
+      color: #fff;
     }
     .user-badge {
       display: flex;
       align-items: center;
-      gap: 12px;
-      font-size: 18px;
-      font-weight: 300;
+      gap: 10px;
+      font-size: 14px;
+      color: #e6ecff;
     }
     .user-avatar {
-      width: 42px;
-      height: 42px;
+      width: 34px;
+      height: 34px;
       background: #008299;
+      border: 1px solid rgba(255, 255, 255, 0.4);
       display: flex;
       align-items: center;
       justify-content: center;
-      font-size: 20px;
-      font-weight: 400;
+      font-weight: 600;
     }
     .tile-grid {
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-      gap: 18px;
-      max-width: 980px;
-      width: 100%;
-      margin: 0 auto;
+      grid-template-columns: repeat(auto-fit, minmax(195px, 1fr));
+      gap: 14px;
     }
     .tile {
-      height: 190px;
+      height: 170px;
       position: relative;
       cursor: pointer;
       text-decoration: none;
@@ -71,12 +72,8 @@
       overflow: hidden;
       transition: transform 0.14s ease, outline 0.1s;
     }
-    .tile:hover {
-      outline: 3px solid rgba(255, 255, 255, 0.55);
-    }
-    .tile:active {
-      transform: scale(0.97);
-    }
+    .tile:hover { outline: 3px solid rgba(255, 255, 255, 0.65); }
+    .tile:active { transform: scale(0.97); }
     .tile-face {
       position: absolute;
       inset: 0;
@@ -84,14 +81,10 @@
       flex-direction: column;
       justify-content: flex-end;
     }
-
-    /* Classic Windows 8 Metro Tile & Splash Colors */
     .tile-xp .tile-face, .splash-xp { background: #00a300; }
     .tile-7 .tile-face, .splash-7 { background: #2d89ef; }
     .tile-8 .tile-face, .splash-8 { background: #008299; }
     .tile-andrd .tile-face, .splash-andrd { background: #5a9e2f; }
-
-    /* Full-Bleed OS Preview Screenshot */
     .tile-preview {
       position: absolute;
       inset: 0;
@@ -101,28 +94,17 @@
       transition: transform 0.35s ease;
       pointer-events: none;
     }
-    .tile:hover .tile-preview {
-      transform: scale(1.05);
-    }
+    .tile:hover .tile-preview { transform: scale(1.05); }
     .tile-caption {
       position: relative;
       z-index: 1;
-      padding: 28px 16px 14px 16px;
-      background: linear-gradient(to top, rgba(0, 0, 0, 0.85) 0%, rgba(0, 0, 0, 0.45) 65%, transparent 100%);
+      padding: 24px 12px 10px 12px;
+      background: linear-gradient(to top, rgba(0, 0, 0, 0.85) 0%, rgba(0, 0, 0, 0.4) 70%, transparent 100%);
     }
-    .tile-label {
-      font-size: 18px;
-      font-weight: 400;
-      text-shadow: 0 1px 3px rgba(0, 0, 0, 0.8);
-    }
-    .tile-sub {
-      font-size: 12px;
-      opacity: 0.88;
-      margin-top: 2px;
-      text-shadow: 0 1px 2px rgba(0, 0, 0, 0.8);
-    }
+    .tile-label { font-size: 16px; font-weight: 400; }
+    .tile-sub { font-size: 11px; opacity: 0.88; margin-top: 2px; }
 
-    /* Full-Screen Windows 8 Flip & Expand Splash */
+    /* Full-Screen 3D Flip & Expand Splash */
     #splash_stage {
       position: fixed;
       inset: 0;
@@ -134,12 +116,11 @@
     #splash_card {
       position: fixed;
       transform-style: preserve-3d;
-      transition:
-        top 0.68s cubic-bezier(0.22, 1, 0.36, 1),
-        left 0.68s cubic-bezier(0.22, 1, 0.36, 1),
-        width 0.68s cubic-bezier(0.22, 1, 0.36, 1),
-        height 0.68s cubic-bezier(0.22, 1, 0.36, 1),
-        transform 0.68s cubic-bezier(0.22, 1, 0.36, 1);
+      transition: top 0.68s cubic-bezier(0.22, 1, 0.36, 1),
+                  left 0.68s cubic-bezier(0.22, 1, 0.36, 1),
+                  width 0.68s cubic-bezier(0.22, 1, 0.36, 1),
+                  height 0.68s cubic-bezier(0.22, 1, 0.36, 1),
+                  transform 0.68s cubic-bezier(0.22, 1, 0.36, 1);
     }
     #splash_card.expanded {
       top: 0 !important;
@@ -156,104 +137,104 @@
       flex-direction: column;
       overflow: hidden;
     }
-    .splash-front {
-      justify-content: flex-end;
-    }
+    .splash-front { justify-content: flex-end; }
     .splash-back {
       transform: rotateY(180deg);
       align-items: center;
       justify-content: center;
-      gap: 20px;
+      gap: 18px;
       text-align: center;
       padding: 24px;
+      color: #fff;
     }
-    .splash-preview-frame {
-      width: min(380px, 80vw);
-      aspect-ratio: 4 / 3;
-      object-fit: cover;
-      border: 2px solid rgba(255, 255, 255, 0.5);
-      box-shadow: 0 12px 32px rgba(0, 0, 0, 0.45);
-    }
-    .splash-text {
-      font-size: 22px;
-      font-weight: 300;
-      opacity: 0.95;
-    }
-    .spinner {
-      width: 32px;
-      height: 32px;
-      border: 3px solid rgba(255, 255, 255, 0.3);
-      border-top-color: #fff;
-      border-radius: 50%;
-      animation: spin 0.75s linear infinite;
-    }
-    @keyframes spin {
-      to { transform: rotate(360deg); }
-    }
-    @media (max-width: 640px) {
-      body { padding: 28px 24px; }
-      .start-title { font-size: 36px; }
-    }
+    .splash-win { width: min(420px, 88vw); box-shadow: 0 16px 40px rgba(0,0,0,0.55); }
+    .splash-preview-frame { width: 100%; aspect-ratio: 4 / 3; object-fit: cover; display: block; border: 1px solid #7f9db9; }
+    .splash-text { font-size: 20px; font-weight: 300; }
   </style>
 </head>
 <body>
-  <div class="start-header">
-    <h1 class="start-title">Start</h1>
-    <div class="user-badge">
-      <span>v86 x86</span>
-      <div class="user-avatar">W</div>
+  <div class="window glass active hybrid-window">
+    <div class="title-bar">
+      <div class="title-bar-text">WinsmXP — v86 Start Launcher</div>
+      <div class="title-bar-controls">
+        <button aria-label="Minimize"></button>
+        <button aria-label="Maximize"></button>
+        <button aria-label="Close"></button>
+      </div>
+    </div>
+
+    <div class="window-body metro-body">
+      <div class="start-header">
+        <h1 class="start-title">Start</h1>
+        <div class="user-badge">
+          <span>v86 x86</span>
+          <div class="user-avatar">W</div>
+        </div>
+      </div>
+
+      <div class="tile-grid">
+        <a class="tile tile-xp" href="xp/index.html" data-target="xp/index.html" data-theme="splash-xp" data-img="previews/xp.jpg" data-title="Windows XP">
+          <div class="tile-face">
+            <img class="tile-preview" src="previews/xp.jpg" alt="Windows XP Preview" />
+            <div class="tile-caption">
+              <div class="tile-label">Windows XP</div>
+              <div class="tile-sub">512 MB • Standard PC</div>
+            </div>
+          </div>
+        </a>
+
+        <a class="tile tile-7" href="7/index.html" data-target="7/index.html" data-theme="splash-7" data-img="previews/7.png" data-title="Windows 7">
+          <div class="tile-face">
+            <img class="tile-preview" src="previews/7.png" alt="Windows 7 Preview" />
+            <div class="tile-caption">
+              <div class="tile-label">Windows 7</div>
+              <div class="tile-sub">512 MB • ACPI</div>
+            </div>
+          </div>
+        </a>
+
+        <a class="tile tile-8" href="8/index.html" data-target="8/index.html" data-theme="splash-8" data-img="previews/8.png" data-title="Windows 8">
+          <div class="tile-face">
+            <img class="tile-preview" src="previews/8.png" alt="Windows 8 Preview" />
+            <div class="tile-caption">
+              <div class="tile-label">Windows 8</div>
+              <div class="tile-sub">768 MB • ACPI</div>
+            </div>
+          </div>
+        </a>
+
+        <a class="tile tile-andrd" href="andrd/index.html" data-target="andrd/index.html" data-theme="splash-andrd" data-img="previews/andrd.jpg" data-title="Android">
+          <div class="tile-face">
+            <img class="tile-preview" src="previews/andrd.jpg" alt="Android Preview" />
+            <div class="tile-caption">
+              <div class="tile-label">Android</div>
+              <div class="tile-sub">768 MB • x86</div>
+            </div>
+          </div>
+        </a>
+      </div>
+    </div>
+
+    <div class="status-bar">
+      <p class="status-bar-field">4 Operating Systems</p>
+      <p class="status-bar-field">Engine: v86 WASM</p>
     </div>
   </div>
 
-  <div class="tile-grid">
-    <a class="tile tile-xp" href="xp/index.html" data-target="xp/index.html" data-theme="splash-xp" data-img="previews/xp.jpg" data-title="Windows XP">
-      <div class="tile-face">
-        <img class="tile-preview" src="previews/xp.jpg" alt="Windows XP Preview" />
-        <div class="tile-caption">
-          <div class="tile-label">Windows XP</div>
-          <div class="tile-sub">512 MB • Standard PC</div>
-        </div>
-      </div>
-    </a>
-
-    <a class="tile tile-7" href="7/index.html" data-target="7/index.html" data-theme="splash-7" data-img="previews/7.png" data-title="Windows 7">
-      <div class="tile-face">
-        <img class="tile-preview" src="previews/7.png" alt="Windows 7 Preview" />
-        <div class="tile-caption">
-          <div class="tile-label">Windows 7</div>
-          <div class="tile-sub">512 MB • ACPI</div>
-        </div>
-      </div>
-    </a>
-
-    <a class="tile tile-8" href="8/index.html" data-target="8/index.html" data-theme="splash-8" data-img="previews/8.png" data-title="Windows 8">
-      <div class="tile-face">
-        <img class="tile-preview" src="previews/8.png" alt="Windows 8 Preview" />
-        <div class="tile-caption">
-          <div class="tile-label">Windows 8</div>
-          <div class="tile-sub">768 MB • ACPI</div>
-        </div>
-      </div>
-    </a>
-
-    <a class="tile tile-andrd" href="andrd/index.html" data-target="andrd/index.html" data-theme="splash-andrd" data-img="previews/andrd.jpg" data-title="Android">
-      <div class="tile-face">
-        <img class="tile-preview" src="previews/andrd.jpg" alt="Android Preview" />
-        <div class="tile-caption">
-          <div class="tile-label">Android</div>
-          <div class="tile-sub">768 MB • x86</div>
-        </div>
-      </div>
-    </a>
-  </div>
-
-  <!-- Full-Screen Flip Splash Container -->
+  <!-- Full-Screen 3D Flip & Expand Splash with 7.css Aero Preview Window -->
   <div id="splash_stage">
     <div id="splash_card">
       <div class="splash-side splash-front" id="splash_front"></div>
       <div class="splash-side splash-back" id="splash_back">
-        <img class="splash-preview-frame" id="splash_logo" src="" alt="" />
-        <div class="spinner"></div>
+        <div class="window glass active splash-win">
+          <div class="title-bar">
+            <div class="title-bar-text" id="splash_win_title">Booting VM</div>
+          </div>
+          <div class="window-body has-space">
+            <img class="splash-preview-frame" id="splash_logo" src="" alt="" />
+            <div role="progressbar" class="marquee" style="margin-top: 10px;"></div>
+          </div>
+        </div>
         <div class="splash-text" id="splash_text"></div>
       </div>
     </div>
@@ -265,6 +246,7 @@
     const card = document.getElementById("splash_card");
     const front = document.getElementById("splash_front");
     const back = document.getElementById("splash_back");
+
 
     window.addEventListener("pageshow", () => {
       isLaunching = false;
@@ -286,6 +268,7 @@
         back.className = "splash-side splash-back " + theme;
         front.innerHTML = this.querySelector(".tile-face").innerHTML;
         document.getElementById("splash_logo").src = this.dataset.img;
+        document.getElementById("splash_win_title").textContent = this.dataset.title;
         document.getElementById("splash_text").textContent = "Launching " + this.dataset.title + "...";
 
         card.style.top = rect.top + "px";
@@ -309,4 +292,4 @@
   </script>
 </body>
 </html>
- 
+
