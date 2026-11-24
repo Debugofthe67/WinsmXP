@@ -254,7 +254,9 @@
         const contentRange = probeRes.headers.get("Content-Range");
         const size = contentRange ? Number(contentRange.split("/")[1]) : 3221225472;
 
-        log("Streaming 3.00 GiB disk (" + size + " bytes) via fetch Range...");
+        log("Streaming 3.00 GiB disk (" + size + " bytes) via async fetch Range...");
+
+        const dirtyBlocks = new Map();
 
         const rangeDisk = {
           byteLength: size,
@@ -269,11 +271,27 @@
                 mode: "cors",
               });
               if (!r.ok && r.status !== 206) throw new Error("HTTP " + r.status);
-              const buf = await r.arrayBuffer();
-              fn(new Uint8Array(buf));
+              const data = new Uint8Array(await r.arrayBuffer());
+
+              for (const [writeOffset, writeData] of dirtyBlocks.entries()) {
+                const writeEnd = writeOffset + writeData.length;
+                if (writeOffset < offset + len && writeEnd > offset) {
+                  const start = Math.max(offset, writeOffset);
+                  const stop = Math.min(offset + len, writeEnd);
+                  data.set(writeData.subarray(start - writeOffset, stop - writeOffset), start - offset);
+                }
+              }
+              fn(data);
             } catch (e) {
               log("Range read error at " + offset + ": " + e.message);
             }
+          },
+          set: function (offset, slice, fn) {
+            dirtyBlocks.set(offset, new Uint8Array(slice));
+            if (fn) fn();
+          },
+          get_as_file: function () {
+            return new Blob([]);
           }
         };
 
@@ -286,6 +304,28 @@
         log("URL Boot Failed: " + err.message);
       }
     };
+
+    document.getElementById("clear_opfs_btn").onclick = async function () {
+      try {
+        if (window.emulator) {
+          try { window.emulator.destroy(); } catch (e) {}
+          window.emulator = null;
+          setVmButtonsEnabled(false);
+          log("Stopped active VM to unlock OPFS file...");
+        }
+        const root = await navigator.storage.getDirectory();
+        let count = 0;
+        for await (const [name] of root.entries()) {
+          await root.removeEntry(name, { recursive: true });
+          log("Deleted from OPFS: " + name);
+          count++;
+        }
+        log(count ? "Cleared " + count + " cached image(s)." : "OPFS cache is already empty.");
+      } catch (err) {
+        log("Clear OPFS Error (" + err.name + "): " + err.message);
+      }
+    };
+
 
     document.getElementById("clear_opfs_btn").onclick = async function () {
       try {
