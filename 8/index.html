@@ -105,7 +105,8 @@
       canvas.style.display = isGraphical ? "block" : "none";
     }
 
-    function startEmulator(hdaConfig) {
+function startEmulator(hdaConfig, initialStateUrl = null) {
+
       if (window.emulator) {
         try { window.emulator.destroy(); } catch (e) {}
       }
