@@ -55,14 +55,14 @@
     }
     .tile-grid {
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
       gap: 18px;
       max-width: 980px;
       width: 100%;
       margin: 0 auto;
     }
     .tile {
-      height: 185px;
+      height: 190px;
       position: relative;
       cursor: pointer;
       text-decoration: none;
@@ -89,6 +89,7 @@
     .tile-xp .tile-face, .splash-xp { background: #00a300; }
     .tile-7 .tile-face, .splash-7 { background: #2d89ef; }
     .tile-8 .tile-face, .splash-8 { background: #008299; }
+    .tile-andrd .tile-face, .splash-andrd { background: #5a9e2f; }
 
     /* Full-Bleed OS Preview Screenshot */
     .tile-preview {
@@ -110,7 +111,7 @@
       background: linear-gradient(to top, rgba(0, 0, 0, 0.85) 0%, rgba(0, 0, 0, 0.45) 65%, transparent 100%);
     }
     .tile-label {
-      font-size: 17px;
+      font-size: 18px;
       font-weight: 400;
       text-shadow: 0 1px 3px rgba(0, 0, 0, 0.8);
     }
@@ -199,8 +200,8 @@
   <div class="start-header">
     <h1 class="start-title">Start</h1>
     <div class="user-badge">
-      <span>User</span>
-      <div class="user-avatar">U</div>
+      <span>v86 x86</span>
+      <div class="user-avatar">W</div>
     </div>
   </div>
 
@@ -229,8 +230,18 @@
       <div class="tile-face">
         <img class="tile-preview" src="previews/8.png" alt="Windows 8 Preview" />
         <div class="tile-caption">
-          <div class="tile-label">Windows 8.1</div>
+          <div class="tile-label">Windows 8</div>
           <div class="tile-sub">768 MB • ACPI</div>
+        </div>
+      </div>
+    </a>
+
+    <a class="tile tile-andrd" href="andrd/index.html" data-target="andrd/index.html" data-theme="splash-andrd" data-img="previews/andrd.jpg" data-title="Android">
+      <div class="tile-face">
+        <img class="tile-preview" src="previews/andrd.jpg" alt="Android Preview" />
+        <div class="tile-caption">
+          <div class="tile-label">Android</div>
+          <div class="tile-sub">768 MB • x86</div>
         </div>
       </div>
     </a>
@@ -298,3 +309,4 @@
   </script>
 </body>
 </html>
+ 
