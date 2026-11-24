@@ -204,7 +204,7 @@ function startEmulator(hdaConfig, initialStateUrl = null) {
         if ("storage" in navigator && navigator.storage.getDirectory) {
           const root = await navigator.storage.getDirectory();
           try {
-            handle = await root.getFileHandle("win7-cached.img", { create: Boolean(useOpfs) });
+            handle = await root.getFileHandle("win8-cached.img", { create: Boolean(useOpfs) });
             const existing = await handle.getFile();
             if (existing.size > 0) {
               log("Loaded cached disk from OPFS (" + existing.size + " bytes). Booting...");
