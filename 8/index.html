@@ -192,7 +192,6 @@
       startEmulator({ buffer: file });
     };
 
-
     document.getElementById("load_url_btn").onclick = async function () {
       const url = document.getElementById("disk_url").value.trim();
       if (!url) return log("Enter a valid .img URL first.");
@@ -255,9 +254,31 @@
         const contentRange = probeRes.headers.get("Content-Range");
         const size = contentRange ? Number(contentRange.split("/")[1]) : 3221225472;
 
-        log("Streaming 3.00 GiB disk (" + size + " bytes) via async HTTP Range...");
+        log("Streaming 3.00 GiB disk (" + size + " bytes) via fetch Range...");
+
+        const rangeDisk = {
+          byteLength: size,
+          load: function () {
+            if (this.onload) this.onload({ target: this });
+          },
+          get: async function (offset, len, fn) {
+            try {
+              const end = offset + len - 1;
+              const r = await fetch(finalUrl, {
+                headers: { Range: "bytes=" + offset + "-" + end },
+                mode: "cors",
+              });
+              if (!r.ok && r.status !== 206) throw new Error("HTTP " + r.status);
+              const buf = await r.arrayBuffer();
+              fn(new Uint8Array(buf));
+            } catch (e) {
+              log("Range read error at " + offset + ": " + e.message);
+            }
+          }
+        };
+
         startEmulator({
-          url: finalUrl,
+          buffer: rangeDisk,
           async: true,
           size: size,
         });
