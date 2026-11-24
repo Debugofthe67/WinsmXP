@@ -215,44 +215,54 @@
           }
         }
 
-        log("Downloading to " + (useOpfs && handle ? "OPFS cache" : "temporary file") + ": " + url + "...");
-        const res = await fetch(url, { mode: "cors" });
-        if (!res.ok) throw new Error("HTTP " + res.status);
+        if (useOpfs && handle) {
+          log("Downloading to OPFS cache: " + url + "...");
+          const res = await fetch(url, { mode: "cors" });
+          if (!res.ok) throw new Error("HTTP " + res.status);
 
-        const total = Number(res.headers.get("Content-Length")) || 0;
-        const reader = res.body.getReader();
-        const writable = (useOpfs && handle) ? await handle.createWritable() : null;
-        const chunks = writable ? null : [];
-        let received = 0, lastLoggedPct = -5;
+          const total = Number(res.headers.get("Content-Length")) || 3221225472;
+          const reader = res.body.getReader();
+          const writable = await handle.createWritable();
+          let received = 0, lastLoggedPct = -5;
 
-        while (true) {
-          const { done, value } = await reader.read();
-          if (done) break;
-          if (writable) await writable.write(value);
-          else chunks.push(value);
-
-          received += value.length;
-          if (total > 0) {
+          while (true) {
+            const { done, value } = await reader.read();
+            if (done) break;
+            await writable.write(value);
+            received += value.length;
             const pct = Math.floor((received / total) * 100);
             if (pct >= lastLoggedPct + 5) {
               lastLoggedPct = pct;
               log("Downloading: " + pct + "% (" + (received / 1048576).toFixed(1) + " MB)");
             }
           }
-        }
 
-        if (writable) {
           await writable.close();
           const savedFile = await handle.getFile();
           log("Saved to OPFS (" + savedFile.size + " bytes). Booting...");
           startEmulator({ buffer: savedFile });
-        } else {
-          const tempFile = new File(chunks, "winxp.img");
-          log("Download complete (" + tempFile.size + " bytes). Booting...");
-          startEmulator({ buffer: tempFile });
+          return;
         }
+
+        log("Resolving stream URL: " + url + "...");
+        const probeRes = await fetch(url, {
+          headers: { Range: "bytes=0-0" },
+          mode: "cors",
+        });
+        if (!probeRes.ok && probeRes.status !== 206) throw new Error("HTTP " + probeRes.status);
+
+        const finalUrl = probeRes.url || url;
+        const contentRange = probeRes.headers.get("Content-Range");
+        const size = contentRange ? Number(contentRange.split("/")[1]) : 3221225472;
+
+        log("Streaming 3.00 GiB disk (" + size + " bytes) via async HTTP Range...");
+        startEmulator({
+          url: finalUrl,
+          async: true,
+          size: size,
+        });
       } catch (err) {
-        log("URL Download Failed: " + err.message);
+        log("URL Boot Failed: " + err.message);
       }
     };
 
@@ -276,8 +286,6 @@
         log("Clear OPFS Error (" + err.name + "): " + err.message);
       }
     };
-
-
 
 
 
