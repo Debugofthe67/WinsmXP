@@ -80,8 +80,6 @@
     <div id="log">Ready. Pick win8.img or enter a URL above.</div>
   </div>
   <script>
-    const STATE_URL = "https://huggingface.co/datasets/Debugofthe67/wasmed7/resolve/main/win8-state.bin";
-
     const logBox = document.getElementById("log");
     const statCpu = document.getElementById("stat_cpu");
     const statDisk = document.getElementById("stat_disk");
@@ -249,31 +247,28 @@ function startEmulator(hdaConfig, initialStateUrl = null) {
           return;
         }
 
-        log("Resolving state snapshot & disk stream URLs...");
-        const [probeRes, stateHeadRes] = await Promise.all([
-          fetch(url, { headers: { Range: "bytes=0-0" }, mode: "cors" }),
-          fetch(STATE_URL, { method: "HEAD", mode: "cors" }),
-        ]);
+        log("Resolving stream URL: " + url + "...");
+        const probeRes = await fetch(url, {
+          headers: { Range: "bytes=0-0" },
+          mode: "cors",
+        });
+        if (!probeRes.ok && probeRes.status !== 206) throw new Error("HTTP " + probeRes.status);
 
-        if (!probeRes.ok && probeRes.status !== 206) throw new Error("Disk HTTP " + probeRes.status);
         const finalUrl = probeRes.url || url;
-        const finalStateUrl = stateHeadRes.ok ? stateHeadRes.url : null;
-
         const contentRange = probeRes.headers.get("Content-Range");
         const size = contentRange
           ? Number(contentRange.split("/")[1])
-          : Number(probeRes.headers.get("Content-Length")) || 3221225472;
+          : Number(probeRes.headers.get("Content-Length"));
 
-        log("Booting Windows 8 (" + (size / 1048576).toFixed(1) + " MB) from instant state snapshot...");
-        startEmulator(
-          {
-            url: finalUrl,
-            async: true,
-            size: size,
-            fixed_chunk_size: 1048576,
-          },
-          finalStateUrl
-        );
+        if (!size) throw new Error("Could not determine exact disk byte size from server.");
+
+        log("Streaming disk (" + (size / 1048576).toFixed(1) + " MB) in 256 KB chunks...");
+        startEmulator({
+          url: finalUrl,
+          async: true,
+          size: size,
+          fixed_chunk_size: 262144,
+        });
 
       } catch (err) {
         log("URL Boot Failed: " + err.message);
@@ -380,4 +375,3 @@ function startEmulator(hdaConfig, initialStateUrl = null) {
   </script>
 </body>
 </html>
-
