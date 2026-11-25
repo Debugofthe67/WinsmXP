@@ -59,7 +59,7 @@
     }
     .tile-grid {
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(195px, 1fr));
+      grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
       gap: 14px;
     }
     .tile {
@@ -82,6 +82,7 @@
       justify-content: flex-end;
     }
     .tile-xp .tile-face, .splash-xp { background: #00a300; }
+    .tile-vista .tile-face, .splash-vista { background: #1e7145; }
     .tile-7 .tile-face, .splash-7 { background: #2d89ef; }
     .tile-8 .tile-face, .splash-8 { background: #008299; }
     .tile-andrd .tile-face, .splash-andrd { background: #5a9e2f; }
@@ -183,6 +184,16 @@
           </div>
         </a>
 
+        <a class="tile tile-vista" href="/vista/index.html" data-target="/vista/index.html" data-theme="splash-vista" data-img="previews/vista.png" data-title="Windows Vista">
+          <div class="tile-face">
+            <img class="tile-preview" src="previews/vista.png" alt="Windows Vista Preview" />
+            <div class="tile-caption">
+              <div class="tile-label">Windows Vista</div>
+              <div class="tile-sub">512 MB • ACPI</div>
+            </div>
+          </div>
+        </a>
+
         <a class="tile tile-7" href="7/index.html" data-target="7/index.html" data-theme="splash-7" data-img="previews/7.png" data-title="Windows 7">
           <div class="tile-face">
             <img class="tile-preview" src="previews/7.png" alt="Windows 7 Preview" />
@@ -216,7 +227,7 @@
     </div>
 
     <div class="status-bar">
-      <p class="status-bar-field">4 Operating Systems</p>
+      <p class="status-bar-field">5 Operating Systems</p>
       <p class="status-bar-field">Engine: v86 WASM</p>
     </div>
   </div>
@@ -246,7 +257,6 @@
     const card = document.getElementById("splash_card");
     const front = document.getElementById("splash_front");
     const back = document.getElementById("splash_back");
-
 
     window.addEventListener("pageshow", () => {
       isLaunching = false;
@@ -292,4 +302,3 @@
   </script>
 </body>
 </html>
-
